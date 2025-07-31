@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #000;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+    }
+    @keyframes rotating {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .box {
+      position: relative;
+      width: 350px;
+      padding: 40px 30px;
+      background: #1e1e1e;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      z-index: 1;
+    }
+    .box::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, #ff0057, #00f2ff, #ff0057, #00f2ff);
+      background-size: 400%;
+      animation: rotating 4s linear infinite;
+      filter: drop-shadow(0 15px 50px #000);
+      z-index: -1;
+    }
+    .box::after {
+      content: "";
+      position: absolute;
+      inset: 4px;
+      background: #2d2d39;
+      border-radius: 15px;
+      border: 8px solid #25252b;
+      z-index: -1;
+    }
+    .box h1 { text-align: center; margin-bottom: 10px; font-size: 24px; }
+    .box p { text-align: center; margin-bottom: 20px; }
+    .box input[type="text"],
+    .box input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      background: #111;
+      color: white;
+    }
+    .box input[type="submit"], .box input[type="reset"] {
+      width: 48%;
+      padding: 10px;
+      margin: 10px 1%;
+      border-radius: 25px;
+      border: none;
+      background: cyan;
+      color: black;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s ease;
+      box-shadow: 0 0 10px cyan;
+    }
+    .box input[type="submit"]:hover,
+    .box input[type="reset"]:hover {
+      background: cyan;
+      box-shadow: 0 0 20px yellow, 0 0 30px yellow;
+    }
+    .box label, .box div { display: block; margin: 10px 0 5px; }
+    .box .radio { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>SIGN UP</h1>
+    <p>Fill Up Below Details.</p>
+
+    <form id="regForm">
+      <input type="text" name="fname" placeholder="First Name"><br>
+      <input type="text" name="lname" placeholder="Last Name"><br>
+      <input type="password" name="pass" placeholder="4-digit Password"><br>
+
+      <label>Gender:</label>
+      <div class="radio">
+        <input type="radio" value="Male" name="gender"> Male
+        <input type="radio" value="Female" name="gender"> Female
+      </div>
+
+      <input type="submit" value="Submit">
+      <input type="reset" value="Reset">
+    </form>
+  </div>
+
+  <script>
+    const scriptURL = "YOUR_GOOGLE_APPS_SCRIPT_WEB_URL"; // Replace with your Web App URL
+
+    function generateCode(length=6) {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let result = "";
+      for (let i=0; i<length; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+      return result;
+    }
+
+    document.getElementById('regForm').addEventListener('submit', e => {
+      e.preventDefault();
+
+      const fname = e.target.fname.value.trim();
+      const lname = e.target.lname.value.trim();
+      const pass = e.target.pass.value.trim();
+      const gender = e.target.gender.value;
+
+      if (!fname || !/^[A-Za-z]+$/.test(fname)) { alert("Enter valid first name"); return; }
+      if (!lname || !/^[A-Za-z]+$/.test(lname)) { alert("Enter valid last name"); return; }
+      if (pass.length !== 4 || isNaN(pass)) { alert("Password must be 4 digits"); return; }
+      if (!gender) { alert("Select gender"); return; }
+
+      const uniqueCode = generateCode();
+      const tgId = "Will be auto-filled by bot";
+
+      fetch(scriptURL, {
+        method: 'POST',
+        body: new URLSearchParams({
+          "Name": fname+" "+lname,
+          "Password": pass,
+          "Gender": gender,
+          "Telegram ID": "",
+          "Unique Code": uniqueCode,
+          "Status": "pending"
+        })
+      }).then(res => {
+        alert("✅ Registered! Your Unique Code: " + uniqueCode);
+      }).catch(err => alert("Error: " + err.message));
+    });
+  </script>
+</body>
+</html>
