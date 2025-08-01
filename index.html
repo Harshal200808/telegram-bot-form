@@ -63,22 +63,21 @@
   </div>
 
 <script>
-  const scriptURL = "https://script.google.com/macros/s/AKfycbxsd9UDsKl7kRn70A75mpinW3u6xhvbd2uLGQhCo3eV-Mz6HcArHFpC9w23TYSi2xjK/exec";
+  const scriptURL = "https://script.google.com/macros/s/AKfycbyoFtexTeHejhpS45ENi9UYkJFX9Zu2ajeNeS5iw_VuHI-Bb6k0scalLk4d2kjvoH8l/exec";
   const form = document.getElementById('subscriptionForm');
-  
+
   // Generate Unique Code
   function generateUniqueCode(length=6) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     return Array.from({length}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
   }
-  
+
   document.getElementById('uniqueCode').value = generateUniqueCode();
 
   // Form Submit
   form.addEventListener('submit', e => {
     e.preventDefault();
 
-    // Get Form Data
     const formData = new FormData(form);
     const preview = `
 Name: ${formData.get('Name')}
@@ -90,7 +89,7 @@ Unique Code: ${formData.get('Unique Code')}
     fetch(scriptURL, { method: 'POST', body: formData })
       .then(response => {
         alert("✅ Submitted!\n\nYour Details:\n" + preview + "\nNow open Telegram and enter your code.");
-        window.location.href = "https://t.me/YOUR_BOT_USERNAME"; // Replace with your bot username
+        window.location.href = "https://t.me/UNK008"; // Redirect to your bot
       })
       .catch(error => alert('❌ Error! ' + error.message));
   });
